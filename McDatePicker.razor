@@ -1,0 +1,146 @@
+﻿@using System.Globalization
+
+<div class="mc-datepicker" onmousewheel="" tabindex="0">
+    <span>
+        <input @bind="Value" @bind:format="@Format" autocomplete="off" type="text" readonly" />
+        <button class="btn btn-link text-info" @onclick="@ShowCalender" tabindex="-1"><i class="far fa-calendar fa-sm"></i></button>
+    </span>
+    <div onmousewheel="" class="mc-datepicker-calendar @(Show?"":"d-none")">
+        <div class="group">
+            <div class="header">
+                <button @onclick="DecYear" class="btn btn-link float-right"><i class="fas fa-angle-double-left"></i></button>
+                <button @onclick="DecMonth" class="btn btn-link float-right"><i class="fas fa-chevron-left"></i></button>
+                <button @onclick="IncYear" class="btn btn-link float-left"><i class="fas fa-angle-double-right"></i></button>
+                <button @onclick="IncMonth" class="btn btn-link float-left"><i class="fas fa-chevron-right"></i></button>
+                <div class="text-center">
+                    <select @bind-value="Month" @bind-value:event="oninput" @onchange="ChangeValue" tabindex="-1" class="mc-select">
+                        @for (int i = 1; i < Months.Count(); i++)
+                        {
+                            <option value="@i">@Months[i - 1]</option>
+                        }
+                    </select>
+                    <select @bind-value="Year" @bind-value:event="oninput" @onchange="ChangeValue" tabindex="-1" class="mc-datepicker-calendar-group-header-year">
+                        @for (int i = Now.Year - 50; i < Now.Year + 50; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div>
+                <table class="w-100">
+                    <thead>
+                        <tr>
+                            @for (int i = 0; i < Days.Count(); i++)
+                            {
+                                <th scope="col" class=""><span>@Days[i]</span></th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < 6; i++)
+                        {
+                            <tr>
+                                <td onmouseup="">
+
+                                    <span class="ui-state-default">1</span>
+                                </td>
+                                <td onmouseup="">
+
+                                    <span class="ui-state-default">2</span>
+                                </td>
+                                <td onmouseup="">
+
+                                    <span class="ui-state-default">3</span>
+                                </td>
+                                <td onmouseup="">
+
+                                    <span class="ui-state-default">4</span>
+                                </td>
+                                <td onmouseup="">
+
+                                    <span class="ui-state-default">5</span>
+                                </td>
+                                <td onmouseup="">
+
+                                    <span class="ui-state-default">6</span>
+                                </td>
+                                <td onmouseup="">
+
+                                    <span class="ui-state-default">7</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    bool Show = false;
+    string[] Months;
+    string[] Days;
+    int Year = Now.Year;
+    int Month = Now.Month;
+    int Day = Now.Day;
+    static int UtcHours = 3;
+    static DateTime Now = DateTime.UtcNow.AddHours(UtcHours);
+    CultureInfo CultureInfo { get; set; }
+    [Parameter] public string CultureString { get; set; } = "en-US";
+    [Parameter] public DateTime? Value { get; set; } = Now;
+    [Parameter] public string Format { get; set; } = "MM/dd/yyyy";
+    [Parameter] public EventCallback<DateTime?> OnChangedEvent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        CultureInfo = new CultureInfo(CultureString);
+        Months = CultureInfo.DateTimeFormat.MonthNames;
+        Days = CultureInfo.DateTimeFormat.AbbreviatedDayNames;
+    }
+
+    void OnChanged(DateTime? CurDate)
+    {
+        Value = CurDate;
+    }
+
+    void ShowCalender()
+    {
+        Show = !Show;
+        StateHasChanged();
+    }
+
+    void ChangeValue()
+    {
+        Year = Year > 0 ? Year : (Value.HasValue ? (int)Value?.Year : Now.Year);
+        Month = Month > 0 ? Month : (Value.HasValue ? (int)Value?.Month : Now.Month);
+        Day = Day > 0 ? Day : (Value.HasValue ? (int)Value?.Day : Now.Day);
+        Value = new DateTime(Year, Month, Day);
+        StateHasChanged();
+    }
+
+    void DecYear()
+    {
+        if (Year > Now.Year - 50) Year--;
+        ChangeValue();
+    }
+
+    void IncYear()
+    {
+        if (Year < Now.Year + 49) Year++;
+        ChangeValue();
+    }
+
+    void DecMonth()
+    {
+        if (Month > 1) Month--;
+        ChangeValue();
+    }
+
+    void IncMonth()
+    {
+        if (Month < 12) Month++;
+        ChangeValue();
+    }
+}

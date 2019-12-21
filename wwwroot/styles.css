@@ -1,0 +1,91 @@
+﻿.mc-datepicker {
+    display: inline-block;
+}
+
+    .mc-datepicker > span {
+        width: 100%;
+        display: inline-block;
+        position: relative;
+        height: 2.1875rem;
+        line-height: 1.5;
+        color: #212529;
+        font-size: 1rem;
+        border: 1px solid #dadfe2;
+        border-radius: 4px;
+        box-shadow: inset 0 4px 3px 0 rgba(0, 0, 0, 0.03);
+        background-color: #ffffff;
+        padding: 0.1875rem 0.625rem;
+    }
+
+        .mc-datepicker > span > input {
+            border: none;
+            background-color: white;
+            width: 110px;
+            line-height: 1.5rem;
+            padding-left: 1.125rem;
+            color: #212529;
+            font-size: 1rem;
+            overflow: visible;
+            margin: 0;
+            font-family: inherit
+        }
+
+            .mc-datepicker > span > input :focus {
+                border: 0;
+            }
+
+        .mc-datepicker > span > button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0.625rem;
+            background-color: transparent;
+            padding: 0;
+            vertical-align: text-top;
+            color: #88989b;
+            width: 1.125rem;
+            font-size: 1.25rem;
+        }
+
+.mc-datepicker-calendar {
+    background-color: #ffffff;
+    margin-left: 0px;
+    z-index: 1002;
+    transform: translateY(0px);
+    opacity: 1;
+    position: absolute;
+    width: calc(195px - 1.425rem);
+    min-width: 320px;
+    box-sizing: content-box;
+    margin: 0 0 0 -0.6875rem;
+    position: absolute;
+    border: solid 1px #cecece;
+    box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+}
+
+    .mc-datepicker-calendar > .group > .header {
+        position: relative;
+        line-height: 2.5rem;
+        background-color: #e6ecef;
+        border-bottom: none;
+        color: #88989b;
+        padding: 0 0.875rem;
+    }
+
+        .mc-datepicker-calendar > .group > .header > button {
+            vertical-align: text-top;
+            color: #88989b;
+            padding: .375rem .25rem;
+        }
+
+    .mc-datepicker-calendar select {
+        font-size: 0.75rem;
+    }
+
+    .mc-datepicker-calendar th {
+        font-weight: normal;
+        font-size: 0.6875rem;
+        padding: 0.5rem 0.875rem;
+        text-align: center;
+    }
