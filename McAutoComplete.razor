@@ -1,0 +1,42 @@
+﻿<div class="position-relative">
+    <input class="form-control" @bind-value="Item.Text" @bind-value:event="oninput" 
+           @onkeyup="OnTextChangedVoid" 
+           readonly="@(Item.Id != string.Empty)" />
+    <button type="button" class="btn btn-link text-danger btn-sm position-absolute @(Item.Id == string.Empty ? "d-none" : null)" title="حذف" 
+           @onclick="@OnClearSearch" style="top: 1px;left: 26px;padding: 5px;"><i class="fas fa-times-circle"></i></button>
+    @if (Items?.Count > 0)
+    {
+        <ul class="mc-autocomplete-list" @onmouseout="@(() => { Items = new List<McAutoCompleteObject>(); })">
+            @foreach (var item in Items)
+            {
+                <li class="mc-autocomplete-item" @onclick="@(() => OnSelectedValue(item))">@item.Text</li>
+            }
+        </ul>
+    }
+</div>
+@code {
+    [CascadingParameter(Name = "Items")] public List<McAutoCompleteObject> Items { get; set; }
+    [Parameter] public McAutoCompleteObject Item { get; set; } = new McAutoCompleteObject();
+    [Parameter] public EventCallback<string> OnTextChanged { get; set; }
+    [Parameter] public EventCallback<McAutoCompleteObject> OnItemSelected { get; set; }
+
+    async Task OnTextChangedVoid()
+    {
+        if (!string.IsNullOrEmpty(Item.Text))
+        {
+            await OnTextChanged.InvokeAsync(Item.Text);
+        }
+    }
+
+    async Task OnSelectedValue(McAutoCompleteObject selectedValue)
+    {
+        Item = selectedValue;
+        await OnItemSelected.InvokeAsync(Item);
+    }
+
+    async Task OnClearSearch()
+    {
+        Item = new McAutoCompleteObject();
+        await OnTextChanged.InvokeAsync(Item.Text);
+    }
+}

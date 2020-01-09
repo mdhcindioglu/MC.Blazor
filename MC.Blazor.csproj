@@ -9,12 +9,16 @@
 - DataGrid
 - DatePicker</Description>
     <PackageId>MC.Blazor</PackageId>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>Open source</PackageReleaseNotes>
     <Version>1.0.0</Version>
-    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Company>MC.Blazor</Company>
-    <Authors>MC.Blazor</Authors>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Company>Muhammed Cindioglu</Company>
+    <Authors>Muhammed Cindioglu</Authors>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/mdhcindioglu/MC.Blazor</RepositoryUrl>
+    <PackageLicenseFile>license.txt</PackageLicenseFile>
+    <Copyright>2020</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +33,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="license\license.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

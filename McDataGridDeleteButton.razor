@@ -1,0 +1,25 @@
+﻿@typeparam IType
+
+<button class="btn btn-link btn-sm text-danger p-0" title="حذف <@Entity.GetString(Name)>" @onclick="@(() => OnDelete(Entity))">
+    @if (Deleteing)
+    {
+        <McLoadingIcon />
+    }
+    else
+    {
+        <i class="fa fa-trash-alt fa-lg"></i>
+    }
+</button>
+
+@code {
+    bool Deleteing = false;
+    [Parameter] public IType Entity { get; set; }
+    [Parameter] public string Name { get; set; }
+    [Parameter] public EventCallback<IType> OnDeleteClick { get; set; }
+    private async Task OnDelete(IType Entity)
+    {
+        Deleteing = true;
+        StateHasChanged();
+        await OnDeleteClick.InvokeAsync(Entity);
+    }
+}

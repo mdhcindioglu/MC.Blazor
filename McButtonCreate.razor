@@ -1,0 +1,13 @@
+﻿<button class="btn @CssClass" title="@Title" @onclick="OnButtonClick">@ChildContent</button>
+
+@code {
+    [Parameter] public string CssClass { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private async Task OnButtonClick()
+    {
+        await OnClick.InvokeAsync(null);
+    }
+}

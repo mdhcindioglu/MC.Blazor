@@ -1,0 +1,97 @@
+﻿@typeparam IType
+
+@{
+    var cssFormat = Col.CssFormating.ToLower();
+    object name = Item.GetValue(Col.Name);
+    if (Col.Type == typeof(decimal))
+    {
+        decimal value = Item.GetDecimal(Col.Name);
+        if (cssFormat.Contains("text-value"))
+        {
+            cssFormat = cssFormat.Replace("text-value", value >= 0 ? "text-info" : "text-danger");
+            if (value < 0) name = (-value).ToString();
+        }
+
+        if (value == 0 && Col.HideZiro)
+            name = string.Empty;
+        else
+            name = value.ToString();
+    }
+    else if (Col.Type == typeof(DateTime))
+    {
+        name = ((DateTime)name);// My.GetDateTime(Item, Col.Name);
+    }
+}
+
+<td class="align-middle @cssFormat" style="width: @($"{Col.Width}%")">
+    @if (Col.Kind == ColumnKind.Update)
+    {
+        <button class="btn btn-link p-0" title="تعديل <@Item.GetValue(Col.Name)>"
+                @onclick="@(() => OnUpdate(Item.GetInt("Id")))"
+                disabled="@(Item.GetBool(nameof(McBaseResponse.IsEditing)) ? "disabled" : null)">
+            @if (Item.GetBool(nameof(McBaseResponse.IsEditing)))
+            {
+                <span><McLoadingIcon /></span>
+            }
+            else
+            {
+                @if (String.IsNullOrWhiteSpace(Col.FormatString))
+                {
+                    @name
+                }
+                else
+                {
+                    @String.Format(Col.FormatString, name)
+                }
+            }
+        </button>
+    }
+    else if (Col.Kind == ColumnKind.Normal)
+    {
+        @if (String.IsNullOrWhiteSpace(Col.FormatString))
+        {
+            @name
+        }
+        else
+        {
+            @String.Format(Col.FormatString, name)
+        }
+    }
+    else if (Col.Kind == ColumnKind.Delete)
+    {
+        <button class="btn btn-link btn-sm text-danger p-0" 
+                disabled="@(Item.GetBool(nameof(McBaseResponse.IsDeleting)) ? "disabled" : null)" title="حذف <@name>" 
+                @onclick="@(() => OnDelete(Item.GetInt("Id")))">
+            @if (Item.GetBool(nameof(McBaseResponse.IsDeleting)))
+            {
+                <span><McLoadingIcon /></span>
+            }
+            else
+            {
+                <span><i class="fa fa-trash-alt fa-lg"></i></span>
+            }
+        </button>
+        @*<McDataGridDeleteButton IType="IType" Entity="@Item" Name="@Col.Name" OnDeleteClick="@(async () => await OnDelete(Item.GetValue("Id")))" />*@
+    }
+</td>
+
+@code {
+    [CascadingParameter(Name = "Result")]
+    protected McDataGridResponse<IType> Response { get; set; }
+    [Parameter] public DataGridColumn Col { get; set; }
+    [Parameter] public IType Item { get; set; }
+    [Parameter] public EventCallback<object> OnDeleteClick { get; set; }
+    [Parameter] public EventCallback<object> OnUpdateClick { get; set; }
+
+    private async Task OnDelete(object id)
+    {
+        Item.SetBool(nameof(McBaseResponse.IsDeleting), true);
+        await OnDeleteClick.InvokeAsync(id);
+    }
+
+    private async Task OnUpdate(object id)
+    {
+        Item.SetBool(nameof(McBaseResponse.IsEditing), true);
+        await OnUpdateClick.InvokeAsync(id);
+    }
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Muhammed Cindioglu</authors>
+    <owners>Muhammed Cindioglu</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/mdhcindioglu/MC.Blazor</projectUrl>
+    <iconUrl>http://www.muhammed.cindioglu.com/mc.ico</iconUrl>
+    <description>$description$</description>
+    <releaseNotes>MC Blazor Components.</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <tags>Blazor</tags>
+  </metadata>
+</package>

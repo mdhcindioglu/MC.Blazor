@@ -1,0 +1,173 @@
+﻿@typeparam IType
+
+@if (Response == null)
+{
+    <McCard>
+        <h3 class="text-info text-center mb-0"><McLoadingIcon /></h3>
+    </McCard>
+}
+else
+{
+    <McCard CssClass="@CardCssClass">
+        <h3 class="text-info d-inline mb-0 @TitleCssClass">@Title</h3>
+        <div class="float-right">
+            <button class="btn btn-info mr-1" disabled="@(Response.IsRefreshing ? "disabled" : null)" title="تحديث" @onclick="OnRefresh"><i class="fas fa-sync-alt"></i></button>
+            @if (Response.CanCreate && !HideCreate)
+            {
+                <button class="btn btn-info" @onclick="OnCreateClicked"><i class="fas fa-plus"></i> إضافة</button>
+            }
+        </div>
+    </McCard>
+
+    @if (Response != null && Response.Count > 0)
+    {
+        <McSearchTextBox CssClass="b-green" PlaceHolder="أدخل نص للبحث عنه" OnResetSearchClicked="OnResetSearchClicked" OnSearchClicked="OnSearchClicked" />
+    }
+
+    @Header
+
+    //If loading records
+    @if (Response.Items == null)
+    {
+        <McCard CssClass="b-green">
+            <h3 class="text-info text-center mb-0"><McLoadingIcon /></h3>
+        </McCard>
+    }
+    //If no records
+    else if (Response.Items.Count() == 0)
+    {
+        if (TableFirstRow == null)
+        {
+            <McCard CssClass="b-green">
+                <div class="text-info text-center mb-0">
+                    @if (string.IsNullOrEmpty(Response.Search.Trim()))
+                    {
+                        <span>
+                            لا يوجد قيود
+                            @if (Response.CanCreate)
+                            {
+                                <span>
+                                    ... لإضافة قيود جديدة اضغط
+                                    <button class="btn btn-info py-0 px-1 align-baseline" @onclick="OnCreateClicked">هنا</button>
+                                </span>
+                            }
+                        </span>
+                    }
+                    else
+                    {
+                        <span>لا يوجد نتائج تتطابق مع شروط البحث</span>
+                    }
+                </div>
+            </McCard>
+        }
+        else
+        {
+            <McCard CssClass="b-green">
+                <table class="table table-bordered table-sm table-striped bg-white">
+                    <thead>
+                        <tr>
+                            @TableHeader
+                        </tr>
+                        <tr>
+                            @foreach (var col in Columns)
+                            {
+                                <th class="@col.CssHeaderFormating" style="width: @($"{col.Width}%")"><span class="btn">@col.Title</span></th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @TableFirstRow
+                        <tr>
+                            <td colspan="@(Columns.Count)"><h4 class="text-center text-info">لا يوجد قيود</h4></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </McCard>
+        }
+    }
+    //If records loaded
+    else
+    {
+        <McCard CssClass="b-green">
+            <table class="table table-bordered table-sm table-striped bg-white mb-3">
+                <thead>
+                    <tr>
+                        @TableHeader
+                    </tr>
+                    <tr>
+                        @foreach (var col in Columns)
+                        {
+                            <th class="@col.CssHeaderFormating" style="width: @($"{col.Width}%")"><span class="btn">@col.Title</span></th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @TableFirstRow
+                    @foreach (var item in Response.Items)
+                    {
+                        <tr>
+                            @foreach (var col in Columns.Where(x => item.GetType().GetProperty(x.Name).Name == x.Name).OrderBy(x => x.Order))
+                            {
+                                <McDataGridCell IType="IType" Item="item" Col="col" OnDeleteClick="OnDelete" OnUpdateClick="OnUpdate" />
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (EnablePagination)
+            {
+                <McPagination TotalPageQuantity="Response.TotalPageQuantity" CurrentPage="Response.CurrentPage" Radius="2" SelectedPage="SelectedPage" />
+            }
+            <div class="text-center">
+                <span>@Response.FirstRec - @Response.LastRec / @((Response.CountFilter != Response.Count) ? Response.CountFilter : Response.Count) @(Response.Count != Response.CountFilter ? $"({Response.Count})" : null)</span>
+            </div>
+        </McCard>
+    }
+
+    @Footer
+}
+@code {
+    [CascadingParameter(Name = "Result")]
+    protected McDataGridResponse<IType> Response { get; set; }
+    [Parameter] public bool EnablePagination { get; set; } = true;
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string CardCssClass { get; set; }
+    [Parameter] public string TitleCssClass { get; set; }
+    [Parameter] public List<DataGridColumn> Columns { get; set; }
+    [Parameter] public bool HideCreate { get; set; }
+
+    [Parameter] public EventCallback<object> OnUpdateClicked { get; set; }
+    [Parameter] public EventCallback<object> OnDeleteClicked { get; set; }
+    [Parameter] public EventCallback OnCreateClicked { get; set; }
+    [Parameter] public EventCallback<int> OnRefreshClicked { get; set; }
+    [Parameter] public EventCallback OnSearchClicked { get; set; }
+    [Parameter] public EventCallback OnResetSearchClicked { get; set; }
+
+    [Parameter] public RenderFragment Header { get; set; }
+    [Parameter] public RenderFragment TableHeader { get; set; }
+    [Parameter] public RenderFragment TableFirstRow { get; set; }
+    [Parameter] public RenderFragment Footer { get; set; }
+
+    async Task OnDelete(object id)
+    {
+        await OnDeleteClicked.InvokeAsync(id);
+    }
+
+    async Task OnUpdate(object id)
+    {
+        await OnUpdateClicked.InvokeAsync(id);
+    }
+
+    private async Task SelectedPage(int page)
+    {
+        Response.CurrentPage = page;
+        await OnRefreshClicked.InvokeAsync(page);
+    }
+
+    async Task OnRefresh()
+    {
+        Response.IsRefreshing = true;
+        await OnRefreshClicked.InvokeAsync(1);
+    }
+}

@@ -1,0 +1,26 @@
+﻿<McCard CssClass="@CssClass">
+    <div class="form-inline position-relative">
+        <input type="text" class="form-control form-control-sm w-100" placeholder="@PlaceHolder" @bind-value="SearchText" @bind-value:event="oninput" style="padding-left: 27px;" />
+        <button type="button" class="btn btn-link text-success btn-sm position-absolute @(string.IsNullOrEmpty(SearchText) ? "d-none" : null)" title="بحث" @onclick="@(() => OnSearchClickedVoid(SearchText))" style="top: 1px;left: 1px;padding: 5px;"><i class="fas fa-search"></i></button>
+        <button type="button" class="btn btn-link text-danger btn-sm position-absolute @(string.IsNullOrEmpty(SearchText) ? "d-none" : null)" title="حذف" @onclick="@(() => OnSearchClickedVoid(SearchText))" style="top: 1px;left: 26px;padding: 5px;"><i class="fas fa-times-circle"></i></button>
+    </div>
+</McCard>
+
+@code {
+    [Parameter] public string CssClass { get; set; }
+    [Parameter] public string PlaceHolder { get; set; }
+    [Parameter] public EventCallback<string> OnSearchClicked { get; set; }
+    [Parameter] public EventCallback OnResetSearchClicked { get; set; }
+    string SearchText = string.Empty;
+
+    async Task OnResetSearchClickedVoid()
+    {
+        SearchText = string.Empty;
+        await OnResetSearchClicked.InvokeAsync(SearchText);
+    }
+
+    async Task OnSearchClickedVoid(string searchText)
+    {
+        await OnSearchClicked.InvokeAsync(searchText);
+    }
+}

@@ -1,19 +1,24 @@
 ﻿@using System.Globalization
 
+@*@foreach (var calender in CurCultureInfo.OptionalCalendars)
+{
+    @calender.AlgorithmType.ToString();
+}*@
+<br />
 <div class="mc-datepicker" onmousewheel="" tabindex="0">
     <span>
-        <input @bind="Value" @bind:format="@Format" autocomplete="off" type="text" readonly" />
+        <input @bind="Value" @bind:format="@Format" autocomplete="off" type="text" readonly />
         <button class="btn btn-link text-info" @onclick="@ShowCalender" tabindex="-1"><i class="far fa-calendar fa-sm"></i></button>
     </span>
     <div onmousewheel="" class="mc-datepicker-calendar @(Show?"":"d-none")">
         <div class="group">
             <div class="header">
-                <button @onclick="DecYear" class="btn btn-link float-right"><i class="fas fa-angle-double-left"></i></button>
+                @*<button @onclick="DecYear" class="btn btn-link float-right"><i class="fas fa-angle-double-left"></i></button>
                 <button @onclick="DecMonth" class="btn btn-link float-right"><i class="fas fa-chevron-left"></i></button>
                 <button @onclick="IncYear" class="btn btn-link float-left"><i class="fas fa-angle-double-right"></i></button>
-                <button @onclick="IncMonth" class="btn btn-link float-left"><i class="fas fa-chevron-right"></i></button>
+                <button @onclick="IncMonth" class="btn btn-link float-left"><i class="fas fa-chevron-right"></i></button>*@
                 <div class="text-center">
-                    <select @bind-value="Month" @bind-value:event="oninput" @onchange="ChangeValue" tabindex="-1" class="mc-select">
+                    @*<select @bind-value="Month" @bind-value:event="oninput" @onchange="ChangeValue" tabindex="-1" class="mc-select">
                         @for (int i = 1; i < Months.Count(); i++)
                         {
                             <option value="@i">@Months[i - 1]</option>
@@ -24,53 +29,35 @@
                         {
                             <option value="@i">@i</option>
                         }
-                    </select>
+                    </select>*@
                 </div>
             </div>
             <div>
                 <table class="w-100">
                     <thead>
-                        <tr>
+                        @*<tr>
                             @for (int i = 0; i < Days.Count(); i++)
                             {
                                 <th scope="col" class=""><span>@Days[i]</span></th>
                             }
-                        </tr>
+                        </tr>*@
                     </thead>
                     <tbody>
-                        @for (int i = 0; i < 6; i++)
+                        @*@for (int i = (int)FirstDayOfWeek; i < 13; i++)
                         {
+                            if (i > 6) i = 7 - i;
                             <tr>
-                                <td onmouseup="">
-
-                                    <span class="ui-state-default">1</span>
-                                </td>
-                                <td onmouseup="">
-
-                                    <span class="ui-state-default">2</span>
-                                </td>
-                                <td onmouseup="">
-
-                                    <span class="ui-state-default">3</span>
-                                </td>
-                                <td onmouseup="">
-
-                                    <span class="ui-state-default">4</span>
-                                </td>
-                                <td onmouseup="">
-
-                                    <span class="ui-state-default">5</span>
-                                </td>
-                                <td onmouseup="">
-
-                                    <span class="ui-state-default">6</span>
-                                </td>
-                                <td onmouseup="">
-
-                                    <span class="ui-state-default">7</span>
-                                </td>
+                                @i*@
+                                @*@for (int j = 0; j < 7; j++)
+                                    {
+                                        <td onmouseup="">*@
+                                @*<span class="ui-state-default">
+                                        @if(CurCultureInfo.Calendar.GetDayOfWeek(Value) ==  i+j+1 == Day)
+                                    </span>*@
+                                @*</td>*@
+                                @*}
                             </tr>
-                        }
+                        }*@
                     </tbody>
                 </table>
             </div>
@@ -80,27 +67,35 @@
 
 @code {
     bool Show = false;
-    string[] Months;
-    string[] Days;
+    //string[] Months;
+    //string[] Days;
     int Year = Now.Year;
     int Month = Now.Month;
     int Day = Now.Day;
+    //int DaysInMonth;
+    //int DayName;
+    //Dictionary<int, string> MonthDays = new Dictionary<int, string>();
     static int UtcHours = 3;
     static DateTime Now = DateTime.UtcNow.AddHours(UtcHours);
-    CultureInfo CultureInfo { get; set; }
+    CultureInfo CurCultureInfo { get; set; }
     [Parameter] public string CultureString { get; set; } = "en-US";
-    [Parameter] public DateTime? Value { get; set; } = Now;
+    [Parameter] public DateTime Value { get; set; } = Now;
     [Parameter] public string Format { get; set; } = "MM/dd/yyyy";
-    [Parameter] public EventCallback<DateTime?> OnChangedEvent { get; set; }
+    ///// <summary>
+    ///// Sunday = 0, Monday = 1, Tuesday = 2, Wednesday = 3, Thursday = 4, Friday = 5, Saturday = 6
+    ///// </summary>
+    //[Parameter] public DayOfWeek FirstDayOfWeek { get; set; } = DayOfWeek.Monday;
+    //[Parameter] public EventCallback<DateTime?> OnChangedEvent { get; set; }
 
     protected override void OnInitialized()
     {
-        CultureInfo = new CultureInfo(CultureString);
-        Months = CultureInfo.DateTimeFormat.MonthNames;
-        Days = CultureInfo.DateTimeFormat.AbbreviatedDayNames;
+        CurCultureInfo = new CultureInfo(CultureString);
+        //Months = CurCultureInfo.DateTimeFormat.MonthNames;
+        //Days = CurCultureInfo.DateTimeFormat.AbbreviatedDayNames;
+        //ChangeValue();
     }
 
-    void OnChanged(DateTime? CurDate)
+    void OnChanged(DateTime CurDate)
     {
         Value = CurDate;
     }
@@ -113,34 +108,52 @@
 
     void ChangeValue()
     {
-        Year = Year > 0 ? Year : (Value.HasValue ? (int)Value?.Year : Now.Year);
-        Month = Month > 0 ? Month : (Value.HasValue ? (int)Value?.Month : Now.Month);
-        Day = Day > 0 ? Day : (Value.HasValue ? (int)Value?.Day : Now.Day);
-        Value = new DateTime(Year, Month, Day);
+        //Year = Year > 0 ? Year : Value.Year;
+        //Month = Month > 0 ? Month : Value.Month;
+        //Day = Day > 0 ? Day : Value.Day;
+        //Value = new DateTime(Year, Month, Day);
+        //CurCultureInfo.DateTimeFormat.FirstDayOfWeek = FirstDayOfWeek;
+
+        //var weeks = CurCultureInfo.Calendar.GetDayOfWeek(Value);
+
+        //DaysInMonth = CurCultureInfo.Calendar.GetDaysInMonth(Year, Month);
+
         StateHasChanged();
     }
 
-    void DecYear()
-    {
-        if (Year > Now.Year - 50) Year--;
-        ChangeValue();
-    }
+    //void DecYear()
+    //{
+    //    if (Year > Now.Year - 50) Year--;
+    //    ChangeValue();
+    //}
 
-    void IncYear()
-    {
-        if (Year < Now.Year + 49) Year++;
-        ChangeValue();
-    }
+    //void IncYear()
+    //{
+    //    if (Year < Now.Year + 49) Year++;
+    //    ChangeValue();
+    //}
 
-    void DecMonth()
-    {
-        if (Month > 1) Month--;
-        ChangeValue();
-    }
+    //void DecMonth()
+    //{
+    //    if (Month > 1)
+    //        Month--;
+    //    else if (Year > Now.Year - 50)
+    //    {
+    //        Month = 12;
+    //        Year--;
+    //    }
+    //    ChangeValue();
+    //}
 
-    void IncMonth()
-    {
-        if (Month < 12) Month++;
-        ChangeValue();
-    }
+    //void IncMonth()
+    //{
+    //    if (Month < 12)
+    //        Month++;
+    //    else if (Year < Now.Year + 49)
+    //    {
+    //        Month = 1;
+    //        Year++;
+    //    }
+    //    ChangeValue();
+    //}
 }

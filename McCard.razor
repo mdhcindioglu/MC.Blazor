@@ -1,0 +1,13 @@
+﻿@namespace MC.Blazor
+
+<div class="card mb-3 @(IsWide ? null : "col-xl-6 col-md-8 col-sm-12 mx-auto") @CssClass">
+    <div class="card-body p-3">
+        @ChildContent
+    </div>
+</div>
+
+@code{
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public bool IsWide { get; set; } = true;
+    [Parameter] public string CssClass { get; set; }
+}
