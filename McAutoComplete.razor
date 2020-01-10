@@ -1,12 +1,15 @@
 ﻿<div class="position-relative">
-    <input class="form-control" @bind-value="Item.Text" @bind-value:event="oninput" 
-           @onkeyup="OnTextChangedVoid" 
-           readonly="@(Item.Id != string.Empty)" />
-    <button type="button" class="btn btn-link text-danger btn-sm position-absolute @(Item.Id == string.Empty ? "d-none" : null)" title="حذف" 
-           @onclick="@OnClearSearch" style="top: 1px;left: 26px;padding: 5px;"><i class="fas fa-times-circle"></i></button>
+    <input class="form-control" @bind-value="Item.Text" @bind-value:event="oninput" style="padding-left: 32px;"
+           @onkeyup="OnTextChangedVoid"
+           @onfocusout="@(async() => { await Task.Delay(200); Items = new List<McAutoCompleteObject>(); })"
+           readonly="@ItemSelected" />
+    <button type="button" class="btn btn-link text-danger btn-sm position-absolute @(ItemSelected ? null : "d-none")" title="حذف"
+            @onclick="@OnClearSearchVoid" style="top: 4px; left: 5px; padding: 5px;">
+        <i class="fas fa-times-circle"></i>
+    </button>
     @if (Items?.Count > 0)
     {
-        <ul class="mc-autocomplete-list" @onmouseout="@(() => { Items = new List<McAutoCompleteObject>(); })">
+        <ul class="mc-autocomplete-list">
             @foreach (var item in Items)
             {
                 <li class="mc-autocomplete-item" @onclick="@(() => OnSelectedValue(item))">@item.Text</li>
@@ -15,10 +18,17 @@
     }
 </div>
 @code {
+    bool ItemSelected = false;
     [CascadingParameter(Name = "Items")] public List<McAutoCompleteObject> Items { get; set; }
     [Parameter] public McAutoCompleteObject Item { get; set; } = new McAutoCompleteObject();
     [Parameter] public EventCallback<string> OnTextChanged { get; set; }
+    [Parameter] public EventCallback OnClearSearch { get; set; }
     [Parameter] public EventCallback<McAutoCompleteObject> OnItemSelected { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        ItemSelected = Item != null & !string.IsNullOrEmpty(Item.Id);
+    }
 
     async Task OnTextChangedVoid()
     {
@@ -31,12 +41,14 @@
     async Task OnSelectedValue(McAutoCompleteObject selectedValue)
     {
         Item = selectedValue;
+        ItemSelected = true;
         await OnItemSelected.InvokeAsync(Item);
     }
 
-    async Task OnClearSearch()
+    async Task OnClearSearchVoid()
     {
         Item = new McAutoCompleteObject();
-        await OnTextChanged.InvokeAsync(Item.Text);
+        Items = new List<McAutoCompleteObject>();
+        await OnClearSearch.InvokeAsync(Item.Text);
     }
 }
