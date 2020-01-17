@@ -21,7 +21,7 @@ else
 
     @if (Response != null && Response.Count > 0)
     {
-        <McSearchTextBox CssClass="b-green" PlaceHolder="أدخل نص للبحث عنه" OnResetSearchClicked="OnResetSearchClicked" OnSearchClicked="OnSearchClicked" />
+        <McSearchTextBox CssClass="b-green" PlaceHolder="أدخل نص للبحث عنه" OnResetSearchClicked="OnResetSearch" OnSearchClicked="OnSearch" />
     }
 
     @Header
@@ -169,5 +169,17 @@ else
     {
         Response.IsRefreshing = true;
         await OnRefreshClicked.InvokeAsync(1);
+    }
+
+    async Task OnSearch(string searchText)
+    {
+        Response.Search = searchText;
+        await OnSearchClicked.InvokeAsync(null);
+    }
+
+    async Task OnResetSearch()
+    {
+        Response.Search = string.Empty;
+        await OnResetSearchClicked.InvokeAsync(null);
     }
 }

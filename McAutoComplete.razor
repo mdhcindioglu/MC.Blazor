@@ -1,54 +1,85 @@
-﻿<div class="position-relative">
-    <input class="form-control" @bind-value="Item.Text" @bind-value:event="oninput" style="padding-left: 32px;"
-           @onkeyup="OnTextChangedVoid"
-           @onfocusout="@(async() => { await Task.Delay(200); Items = new List<McAutoCompleteObject>(); })"
-           readonly="@ItemSelected" />
-    <button type="button" class="btn btn-link text-danger btn-sm position-absolute @(ItemSelected ? null : "d-none")" title="حذف"
-            @onclick="@OnClearSearchVoid" style="top: 4px; left: 5px; padding: 5px;">
+﻿@using System.Timers
+<div class="position-relative">
+    <input @bind-value="searchQuery" @bind-value:event="oninput" @onkeyup="Search"
+           class="form-control @(ItemSelected ? "modified valid" : "invalid")" style="padding-left: 32px;"
+           @attributes="AdditionalAttributes"
+           readonly="@(ItemSelected || Items == null ? "readonly" : null)" />
+    <span class="position-absolute text-green @(Items == null ? null : "d-none")" style="top: 8px; right: 8px;" title="تحميل..."><McLoadingIcon /></span>
+    <button type="button"
+            class="btn btn-link text-danger btn-sm position-absolute @(ItemSelected ? null : "d-none")"
+            title="حذف"
+            @onclick="@ClearSearch"
+            style="top: 4px; left: 5px; padding: 5px;">
         <i class="fas fa-times-circle"></i>
     </button>
-    @if (Items?.Count > 0)
+
+    @if (filtersedItems != null && filtersedItems.Count() > 0)
     {
         <ul class="mc-autocomplete-list">
-            @foreach (var item in Items)
+            @foreach (var item in filtersedItems)
             {
                 <li class="mc-autocomplete-item" @onclick="@(() => OnSelectedValue(item))">@item.Text</li>
             }
         </ul>
     }
 </div>
+<br />
+@(Items != null ? Items.Count().ToString() : "No")
+<br />
+@Id
+
 @code {
-    bool ItemSelected = false;
-    [CascadingParameter(Name = "Items")] public List<McAutoCompleteObject> Items { get; set; }
-    [Parameter] public McAutoCompleteObject Item { get; set; } = new McAutoCompleteObject();
-    [Parameter] public EventCallback<string> OnTextChanged { get; set; }
-    [Parameter] public EventCallback OnClearSearch { get; set; }
-    [Parameter] public EventCallback<McAutoCompleteObject> OnItemSelected { get; set; }
+    [CascadingParameter(Name = "SelectListItems")] public List<McAutoCompleteObject> Items { get; set; }
+    [CascadingParameter(Name = "Id")] public string Id { get; set; }
+    [Parameter] public EventCallback<string> NewItemSelected { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object> AdditionalAttributes { get; set; }
+
+    string searchQuery;
+    List<McAutoCompleteObject> filtersedItems;
+    bool ItemSelected => !string.IsNullOrEmpty(Id);
 
     protected override void OnParametersSet()
     {
-        ItemSelected = Item != null & !string.IsNullOrEmpty(Item.Id);
+        if (Items != null && Id != null)
+            searchQuery = Items.FirstOrDefault(x => x.Id.ToString() == Id).Text;
     }
 
-    async Task OnTextChangedVoid()
+    protected override void OnInitialized()
     {
-        if (!string.IsNullOrEmpty(Item.Text))
+        if (Items != null && Id != null)
+            searchQuery = Items.FirstOrDefault(x => x.Id.ToString() == Id).Text;
+    }
+
+    void Search()
+    {
+        filtersedItems = null;
+        if (Items != null && !ItemSelected && !string.IsNullOrEmpty(searchQuery.Trim()))
         {
-            await OnTextChanged.InvokeAsync(Item.Text);
+            var search = searchQuery.Trim().ToLower().Replace("أ", "ا").Replace("إ", "ا").Replace("آ", "ا").Replace("ة", "ه").Replace("ىء", "ئ");
+            filtersedItems = Items
+                .Where(x => x.TextSearch.Contains(search))
+                .Select(x => new McAutoCompleteObject
+                {
+                    Id = x.Id,
+                    Text = x.Text,
+                    TextSearch = x.TextSearch,
+                }).ToList();
         }
     }
 
-    async Task OnSelectedValue(McAutoCompleteObject selectedValue)
+    void OnSelectedValue(McAutoCompleteObject selectedItem)
     {
-        Item = selectedValue;
-        ItemSelected = true;
-        await OnItemSelected.InvokeAsync(Item);
+        Id = selectedItem.Id;
+        searchQuery = selectedItem.Text;
+        filtersedItems = null;
+        NewItemSelected.InvokeAsync(Id);
     }
 
-    async Task OnClearSearchVoid()
+    void ClearSearch()
     {
-        Item = new McAutoCompleteObject();
-        Items = new List<McAutoCompleteObject>();
-        await OnClearSearch.InvokeAsync(Item.Text);
+        Id = string.Empty;
+        searchQuery = string.Empty;
+        filtersedItems = null;
+        NewItemSelected.InvokeAsync(string.Empty);
     }
 }

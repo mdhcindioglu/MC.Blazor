@@ -6,19 +6,8 @@ namespace MC.Blazor
 {
     public class McAutoCompleteObject
     {
-        public McAutoCompleteObject(string id, string text)
-        {
-            Id = id;
-            Text = text;
-        }
-        
-        public McAutoCompleteObject()
-        {
-            Id = string.Empty;
-            Text = string.Empty;
-        }
-
         public string Id { get; set; }
-        public string Text { get; set; } = string.Empty;
+        public string Text { get; set; }
+        public string TextSearch { get; set; }
     }
 }
