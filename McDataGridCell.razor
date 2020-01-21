@@ -1,4 +1,5 @@
-﻿@typeparam IType
+﻿@namespace MC.Blazor
+@typeparam IType
 
 @{
     var cssFormat = Col.CssFormating.ToLower();
@@ -59,8 +60,8 @@
     }
     else if (Col.Kind == ColumnKind.Delete)
     {
-        <button class="btn btn-link btn-sm text-danger p-0" 
-                disabled="@(Item.GetBool(nameof(McBaseResponse.IsDeleting)) ? "disabled" : null)" title="حذف <@name>" 
+        <button class="btn btn-link btn-sm text-danger p-0"
+                disabled="@(Item.GetBool(nameof(McBaseResponse.IsDeleting)) ? "disabled" : null)" title="حذف <@name>"
                 @onclick="@(() => OnDelete(Item.GetInt("Id")))">
             @if (Item.GetBool(nameof(McBaseResponse.IsDeleting)))
             {
