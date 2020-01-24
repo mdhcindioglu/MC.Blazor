@@ -1,4 +1,6 @@
-﻿.mc-datepicker {
+﻿@import url('libs/font-awesome/css/all.min.css');
+
+.mc-datepicker {
     display: inline-block;
 }
 

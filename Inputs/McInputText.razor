@@ -1,0 +1,9 @@
+﻿@namespace MC.Blazor
+
+<input type="text" class="form-control @Class" style="position: relative;@Style" />
+<i class="fas fa-info-circle text-danger" style="" data-toggle="tooltip" data-html="true" title=""></i>
+
+@code {
+    [Parameter] public string Style { get; set; }
+    [Parameter] public string Class { get; set; }
+}

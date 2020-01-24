@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MC.Blazor
 {
-    public static class objectExtensions
+    public static class StringExtensions
     {
         public static object GetValue(this object obj, string property) =>
             obj.GetType().GetProperty(property).GetValue(obj);
