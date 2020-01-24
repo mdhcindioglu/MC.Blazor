@@ -1,0 +1,8 @@
+﻿@namespace MC.Blazor
+
+<div class="alert-icon @(string.IsNullOrEmpty(Message) ? "" : "d-none")" style="@Style"><i class="fas fa-info-circle text-danger" title="@Message"></i></div>
+
+@code {
+    [Parameter] public string Message { get; set; } = string.Empty;
+    [Parameter] public string Style { get; set; } = string.Empty;
+}

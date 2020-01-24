@@ -37,8 +37,7 @@
         links.Add(new LinkModel(1, isFirstPageLinkEnabled, "<<", "الأول"));
 
         var isPreviousPageLinkEnabled = CurrentPage != 1;
-        var PreviousPage = CurrentPage - 1;
-        links.Add(new LinkModel(PreviousPage, isPreviousPageLinkEnabled, "<", "السابق"));
+        links.Add(new LinkModel(CurrentPage - 1, isPreviousPageLinkEnabled, "<", "السابق"));
 
         if (CurrentPage - Radius > 1 && TotalPageQuantity > Radius)
             links.Add(new LinkModel(0, false, "..."));
