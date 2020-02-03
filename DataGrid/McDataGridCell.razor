@@ -1,0 +1,26 @@
+﻿@namespace MC.Blazor
+@typeparam IType
+@inherits McDataGridCellBase<IType>
+
+    <td class="align-middle @cssFormat" style="width: @($"{Col.Width}%")">
+        @if (Col.Kind == ColumnKind.Normal)
+        {
+            <McDataGridCellNormal IType="IType" Item="Item" Col="Col" />
+        }
+        else if (Col.Kind == ColumnKind.Phone)
+        {
+            <McDataGridCellPhone IType="IType" Item="Item" Col="Col" />
+        }
+        else if (Col.Kind == ColumnKind.Email)
+        {
+            <McDataGridCellEmail IType="IType" Item="Item" Col="Col" />
+        }
+        else if (Col.Kind == ColumnKind.Update)
+        {
+        <McDataGridCellUpdate IType="IType" Item="Item" Col="Col" OnUpdate="OnUpdate" />
+        }
+        else if (Col.Kind == ColumnKind.Delete)
+        {
+        <McDataGridCellDelete IType="IType" Item="Item" Col="Col" OnDelete="OnDelete" />
+        }
+    </td>

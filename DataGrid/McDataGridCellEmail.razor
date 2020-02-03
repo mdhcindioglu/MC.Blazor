@@ -1,0 +1,18 @@
+﻿@namespace MC.Blazor
+@typeparam IType
+
+<a href="mailto:@Item.GetValue(Col.Name)">
+    @if (String.IsNullOrWhiteSpace(Col.FormatString))
+    {
+        @Item.GetValue(Col.Name)
+    }
+    else
+    {
+        @String.Format(Item.GetValue(Col.Name).ToString(), Col.FormatString.ToLower())
+    }
+</a>
+
+@code {
+    [Parameter] public IType Item { get; set; }
+    [Parameter] public DataGridColumn Col { get; set; }
+}

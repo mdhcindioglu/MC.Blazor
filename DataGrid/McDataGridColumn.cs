@@ -14,9 +14,8 @@ namespace MC.Blazor
         public Type Type { get; set; } = typeof(String);
         public int Width { get; set; } = 10;
         public ColumnKind Kind { get; set; } = ColumnKind.Normal;
-        public int Order { get; set; } = 0;
         public bool HideZiro { get; set; } = true;
     }
 
-    public enum ColumnKind { Normal, Update, Delete }
+    public enum ColumnKind { Normal, Update, Delete, Email, Phone }
 }

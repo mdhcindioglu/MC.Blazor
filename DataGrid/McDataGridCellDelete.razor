@@ -1,0 +1,33 @@
+﻿@namespace MC.Blazor
+@typeparam IType
+
+@{
+    var cssFormat = Col.CssFormating.ToLower();
+    object name = Item.GetValue(Col.Name);
+    bool isDeleting = (Item as McBaseResponse).IsDeleting;
+}
+
+<button class="btn btn-link btn-sm text-danger p-0"
+        disabled="@(isDeleting ? "disabled" : null)" 
+        title="حذف <@name>"
+        @onclick="@(() => OnDeleteVoid(Item))">
+    @if (isDeleting)
+    {
+        <span><McLoadingIcon /></span>
+    }
+    else
+    {
+        <span><i class="fa fa-trash-alt fa-lg"></i></span>
+    }
+</button>
+
+@code {
+    [Parameter] public IType Item { get; set; }
+    [Parameter] public DataGridColumn Col { get; set; }
+    [Parameter] public EventCallback<string> OnDelete { get; set; }
+
+    async Task OnDeleteVoid(IType Item)
+    {
+        await OnDelete.InvokeAsync(Item.GetString("Id"));
+    }
+}

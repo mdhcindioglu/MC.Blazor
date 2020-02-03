@@ -1,4 +1,6 @@
-﻿@using System.Timers
+﻿@namespace MC.Blazor
+
+@using System.Timers
 <div class="position-relative">
     <input @bind-value="searchQuery" @bind-value:event="oninput" @onkeyup="Search"
            class="form-control @(ItemSelected ? "modified valid" : "invalid")" style="padding-left: 32px;"

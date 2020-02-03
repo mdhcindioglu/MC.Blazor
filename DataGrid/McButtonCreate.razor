@@ -1,4 +1,6 @@
-﻿<button class="btn @CssClass" title="@Title" @onclick="OnButtonClick">@ChildContent</button>
+﻿@namespace MC.Blazor
+
+<button class="btn @CssClass" title="@Title" @onclick="OnButtonClick">@ChildContent</button>
 
 @code {
     [Parameter] public string CssClass { get; set; }

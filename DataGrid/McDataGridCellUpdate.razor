@@ -1,0 +1,38 @@
+﻿@namespace MC.Blazor
+@typeparam IType
+
+@{
+    var cssFormat = Col.CssFormating.ToLower();
+    object name = Item.GetValue(Col.Name);
+}
+
+<button class="btn btn-link p-0" title="تعديل <@Item.GetValue(Col.Name)>"
+        @onclick="@(() => OnUpdateVoid(Item))"
+        disabled="@(Item.GetBool(nameof(McBaseResponse.IsEditing)) ? "disabled" : null)">
+    @if (Item.GetBool(nameof(McBaseResponse.IsEditing)))
+    {
+        <span><McLoadingIcon /></span>
+    }
+    else
+    {
+        @if (String.IsNullOrWhiteSpace(Col.FormatString))
+        {
+            @name
+        }
+        else
+        {
+            @String.Format(Col.FormatString, name)
+        }
+    }
+</button>
+
+@code {
+    [Parameter] public IType Item { get; set; }
+    [Parameter] public DataGridColumn Col { get; set; }
+    [Parameter] public EventCallback<string> OnUpdate { get; set; }
+
+    async Task OnUpdateVoid(IType Item)
+    {
+        await OnUpdate.InvokeAsync(Item.GetString("Id"));
+    }
+}

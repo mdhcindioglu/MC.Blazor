@@ -40,5 +40,13 @@ namespace MC.Blazor
             try { obj.GetType().GetProperty(property).SetValue(obj, newValue); }
             catch { }
         }
+
+        public static string ToPhone(this string str)
+        {
+            if (str.Length == 10)
+                return $"({str.Substring(0, 3)}) {str.Substring(3, 3)} {str.Substring(6, 4)}";
+            else
+                return str;
+        }
     }
 }

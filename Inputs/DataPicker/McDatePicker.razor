@@ -1,9 +1,11 @@
-﻿@using System.Globalization
+﻿@namespace MC.Blazor
+
+@using System.Globalization
 
 @*@foreach (var calender in CurCultureInfo.OptionalCalendars)
-{
-    @calender.AlgorithmType.ToString();
-}*@
+    {
+        @calender.AlgorithmType.ToString();
+    }*@
 <br />
 <div class="mc-datepicker" onmousewheel="" tabindex="0">
     <span>
@@ -14,50 +16,50 @@
         <div class="group">
             <div class="header">
                 @*<button @onclick="DecYear" class="btn btn-link float-right"><i class="fas fa-angle-double-left"></i></button>
-                <button @onclick="DecMonth" class="btn btn-link float-right"><i class="fas fa-chevron-left"></i></button>
-                <button @onclick="IncYear" class="btn btn-link float-left"><i class="fas fa-angle-double-right"></i></button>
-                <button @onclick="IncMonth" class="btn btn-link float-left"><i class="fas fa-chevron-right"></i></button>*@
+                    <button @onclick="DecMonth" class="btn btn-link float-right"><i class="fas fa-chevron-left"></i></button>
+                    <button @onclick="IncYear" class="btn btn-link float-left"><i class="fas fa-angle-double-right"></i></button>
+                    <button @onclick="IncMonth" class="btn btn-link float-left"><i class="fas fa-chevron-right"></i></button>*@
                 <div class="text-center">
                     @*<select @bind-value="Month" @bind-value:event="oninput" @onchange="ChangeValue" tabindex="-1" class="mc-select">
-                        @for (int i = 1; i < Months.Count(); i++)
-                        {
-                            <option value="@i">@Months[i - 1]</option>
-                        }
-                    </select>
-                    <select @bind-value="Year" @bind-value:event="oninput" @onchange="ChangeValue" tabindex="-1" class="mc-datepicker-calendar-group-header-year">
-                        @for (int i = Now.Year - 50; i < Now.Year + 50; i++)
-                        {
-                            <option value="@i">@i</option>
-                        }
-                    </select>*@
+                            @for (int i = 1; i < Months.Count(); i++)
+                            {
+                                <option value="@i">@Months[i - 1]</option>
+                            }
+                        </select>
+                        <select @bind-value="Year" @bind-value:event="oninput" @onchange="ChangeValue" tabindex="-1" class="mc-datepicker-calendar-group-header-year">
+                            @for (int i = Now.Year - 50; i < Now.Year + 50; i++)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>*@
                 </div>
             </div>
             <div>
                 <table class="w-100">
                     <thead>
                         @*<tr>
-                            @for (int i = 0; i < Days.Count(); i++)
-                            {
-                                <th scope="col" class=""><span>@Days[i]</span></th>
-                            }
-                        </tr>*@
+                                @for (int i = 0; i < Days.Count(); i++)
+                                {
+                                    <th scope="col" class=""><span>@Days[i]</span></th>
+                                }
+                            </tr>*@
                     </thead>
                     <tbody>
                         @*@for (int i = (int)FirstDayOfWeek; i < 13; i++)
-                        {
-                            if (i > 6) i = 7 - i;
-                            <tr>
-                                @i*@
-                                @*@for (int j = 0; j < 7; j++)
-                                    {
-                                        <td onmouseup="">*@
-                                @*<span class="ui-state-default">
-                                        @if(CurCultureInfo.Calendar.GetDayOfWeek(Value) ==  i+j+1 == Day)
-                                    </span>*@
-                                @*</td>*@
-                                @*}
-                            </tr>
-                        }*@
+                            {
+                                if (i > 6) i = 7 - i;
+                                <tr>
+                                    @i*@
+                        @*@for (int j = 0; j < 7; j++)
+                            {
+                                <td onmouseup="">*@
+                        @*<span class="ui-state-default">
+                                @if(CurCultureInfo.Calendar.GetDayOfWeek(Value) ==  i+j+1 == Day)
+                            </span>*@
+                        @*</td>*@
+                        @*}
+                                </tr>
+                            }*@
                     </tbody>
                 </table>
             </div>
