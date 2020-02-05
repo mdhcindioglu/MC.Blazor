@@ -4,7 +4,7 @@
 <a href="tel:@Item.GetValue(Col.Name)">
     @if (String.IsNullOrWhiteSpace(Col.FormatString))
     {
-        @Item.GetString(Col.Name).ToPhone()
+        @Item.GetString(Col.Name).ToPhoneFormat()
     }
     else
     {

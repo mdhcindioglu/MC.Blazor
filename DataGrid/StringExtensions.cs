@@ -4,8 +4,16 @@ using System.Text;
 
 namespace MC.Blazor
 {
-    public static class StringExtensions
+    public static class objectExtensions
     {
+        public static string ToPhoneFormat(this string str)
+        {
+            if (str.Length == 10)
+                return $"({str.Substring(0, 3)}) {str.Substring(3, 3)} {str.Substring(6, 4)}";
+            else
+                return str;
+        }
+
         public static object GetValue(this object obj, string property) =>
             obj.GetType().GetProperty(property).GetValue(obj);
 
@@ -39,14 +47,6 @@ namespace MC.Blazor
         {
             try { obj.GetType().GetProperty(property).SetValue(obj, newValue); }
             catch { }
-        }
-
-        public static string ToPhone(this string str)
-        {
-            if (str.Length == 10)
-                return $"({str.Substring(0, 3)}) {str.Substring(3, 3)} {str.Substring(6, 4)}";
-            else
-                return str;
         }
     }
 }
