@@ -1,0 +1,27 @@
+﻿@namespace MC.Blazor
+@typeparam IType
+
+@using Microsoft.AspNetCore.Components.Forms
+
+<InputCheckbox @bind-Value="@checkboxValue" @bind-Value:event="oninput" />
+
+@code {
+    bool checkboxValue
+    {
+        get => Item.GetBool(Col.Name);
+        set
+        {
+            var state = new McDataGridCellCheckboxState
+            {
+                Id = Item.GetString("Id"),
+                OldState = Item.GetBool(Col.Name),
+                NewState = value
+            };
+
+            OnChanged.InvokeAsync(state).Start();
+        }
+    }
+    [Parameter] public IType Item { get; set; }
+    [Parameter] public DataGridColumn Col { get; set; }
+    [Parameter] public EventCallback<McDataGridCellCheckboxState> OnChanged { get; set; }
+}

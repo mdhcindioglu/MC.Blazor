@@ -15,12 +15,16 @@
         {
             <McDataGridCellEmail IType="IType" Item="Item" Col="Col" />
         }
+        else if (Col.Kind == ColumnKind.Checkbox)
+        {
+            <McDataGridCellCheckbox IType="IType" Item="Item" Col="Col" OnChanged="OnChangedCheckboxVoid" />
+        }
         else if (Col.Kind == ColumnKind.Update)
         {
-        <McDataGridCellUpdate IType="IType" Item="Item" Col="Col" OnUpdate="OnUpdate" />
+            <McDataGridCellUpdate IType="IType" Item="Item" Col="Col" OnUpdate="OnUpdate" />
         }
         else if (Col.Kind == ColumnKind.Delete)
         {
-        <McDataGridCellDelete IType="IType" Item="Item" Col="Col" OnDelete="OnDelete" />
+            <McDataGridCellDelete IType="IType" Item="Item" Col="Col" OnDelete="OnDelete" />
         }
     </td>

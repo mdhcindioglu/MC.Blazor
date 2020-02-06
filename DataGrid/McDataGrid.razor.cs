@@ -23,6 +23,7 @@ namespace MC.Blazor
         [Parameter] public EventCallback<int> OnRefreshClicked { get; set; }
         [Parameter] public EventCallback<string> OnSearchClicked { get; set; }
         [Parameter] public EventCallback OnResetSearchClicked { get; set; }
+        [Parameter] public EventCallback<McDataGridCellCheckboxState> OnChangedCheckbox { get; set; }
 
         [Parameter] public RenderFragment Header { get; set; }
         [Parameter] public RenderFragment TableHeader { get; set; }
@@ -61,6 +62,11 @@ namespace MC.Blazor
         {
             Response.Search = string.Empty;
             await OnResetSearchClicked.InvokeAsync(null);
+        }
+    
+        protected async Task OnChangedCheckboxVoid(McDataGridCellCheckboxState state)
+        {
+            await OnChangedCheckbox.InvokeAsync(state);
         }
     }
 }

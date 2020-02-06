@@ -17,5 +17,5 @@ namespace MC.Blazor
         public bool HideZiro { get; set; } = true;
     }
 
-    public enum ColumnKind { Normal, Update, Delete, Email, Phone }
+    public enum ColumnKind { Normal, Update, Delete, Email, Phone, Checkbox }
 }

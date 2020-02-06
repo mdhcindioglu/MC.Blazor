@@ -14,6 +14,7 @@ namespace MC.Blazor
         [Parameter] public IType Item { get; set; }
         [Parameter] public EventCallback<string> OnDeleteClick { get; set; }
         [Parameter] public EventCallback<string> OnUpdateClick { get; set; }
+        [Parameter] public EventCallback<McDataGridCellCheckboxState> OnChangedCheckbox { get; set; }
         protected string cssFormat;
         object name;
 
@@ -51,6 +52,11 @@ namespace MC.Blazor
         {
             (Item as McBaseResponse).IsEditing = true;
             await OnUpdateClick.InvokeAsync(id);
+        }
+
+        protected async Task OnChangedCheckboxVoid(McDataGridCellCheckboxState state)
+        {
+            await OnChangedCheckbox.InvokeAsync(state);
         }
     }
 }
