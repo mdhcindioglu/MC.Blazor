@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace MC.Blazor
 {
-    public class McDataGridCellBase<IType> : ComponentBase
+    public class McDataGridCellBase : ComponentBase
     {
         [CascadingParameter(Name = "Result")]
-        protected McDataGridResponse<IType> Response { get; set; }
-        [Parameter] public DataGridColumn Col { get; set; }
-        [Parameter] public IType Item { get; set; }
+        protected McDataGridResponse<object> Response { get; set; }
+        [CascadingParameter(Name = "Item")]
+        protected object Item { get; set; }
+        [CascadingParameter(Name = "Col")]
+        protected McDataGridColumn Col { get; set; }
+
         [Parameter] public EventCallback<string> OnDeleteClick { get; set; }
         [Parameter] public EventCallback<string> OnUpdateClick { get; set; }
         [Parameter] public EventCallback<McDataGridCellCheckboxState> OnChangedCheckbox { get; set; }

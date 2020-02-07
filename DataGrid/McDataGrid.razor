@@ -112,12 +112,16 @@ else
                     @TableFirstRow
                     @foreach (var item in Response.Items)
                     {
-                        <tr>
-                            @foreach (var col in Columns.Where(x => item.GetType().GetProperty(x.Name).Name == x.Name))
-                            {
-                                <McDataGridCell IType="IType" Item="item" Col="col" OnDeleteClick="OnDelete" OnUpdateClick="OnUpdate" OnChangedCheckbox="OnChangedCheckboxVoid" />
-                            }
-                        </tr>
+                    <tr>
+                        @foreach (var col in Columns.Where(x => item.GetType().GetProperty(x.Name).Name == x.Name))
+                        {
+                            <CascadingValue Name="Item" Value="item">
+                                <CascadingValue Name="Col" Value="col">
+                                    <McDataGridCell OnDeleteClick="OnDelete" OnUpdateClick="OnUpdate" OnChangedCheckbox="OnChangedCheckboxVoid" />
+                                </CascadingValue>
+                            </CascadingValue>
+                        }
+                    </tr>
                     }
                 </tbody>
             </table>

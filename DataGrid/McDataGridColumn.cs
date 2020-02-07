@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MC.Blazor
 {
-    public class DataGridColumn
+    public class McDataGridColumn
     {
         public string Title { get; set; }
         public string Name { get; set; } = "Name";

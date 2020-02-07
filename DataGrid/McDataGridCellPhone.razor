@@ -1,5 +1,4 @@
 ﻿@namespace MC.Blazor
-@typeparam IType
 
 <a href="tel:@Item.GetValue(Col.Name)">
     @if (String.IsNullOrWhiteSpace(Col.FormatString))
@@ -13,6 +12,8 @@
 </a>
 
 @code {
-    [Parameter] public IType Item { get; set; }
-    [Parameter] public DataGridColumn Col { get; set; }
+    [CascadingParameter(Name = "Item")]
+    protected object Item { get; set; }
+    [CascadingParameter(Name = "Col")]
+    protected McDataGridColumn Col { get; set; }
 }

@@ -1,27 +1,27 @@
 ﻿@namespace MC.Blazor
-@typeparam IType
 
-@using Microsoft.AspNetCore.Components.Forms
-
-<InputCheckbox @bind-Value="@checkboxValue" @bind-Value:event="oninput" />
+<button class="btn btn-link text-@(Item.GetBool(Col.Name) ? "success" : "dark")" title="@(Item.GetBool(Col.Name) ? "إلغاء تفعيل" : "تفعيل")" @onclick="Clicked">
+    <i class="fas fa-check-square"></i>
+</button>
 
 @code {
-    bool checkboxValue
-    {
-        get => Item.GetBool(Col.Name);
-        set
-        {
-            var state = new McDataGridCellCheckboxState
-            {
-                Id = Item.GetString("Id"),
-                OldState = Item.GetBool(Col.Name),
-                NewState = value
-            };
+    [CascadingParameter(Name = "Item")]
+    protected object Item { get; set; }
 
-            OnChanged.InvokeAsync(state).Start();
-        }
-    }
-    [Parameter] public IType Item { get; set; }
-    [Parameter] public DataGridColumn Col { get; set; }
+    [CascadingParameter(Name = "Col")]
+    protected McDataGridColumn Col { get; set; }
+
     [Parameter] public EventCallback<McDataGridCellCheckboxState> OnChanged { get; set; }
+
+    async Task Clicked()
+    {
+        var state = new McDataGridCellCheckboxState
+        {
+            Id = Item.GetString("Id"),
+            Name = Col.Name,
+            NewState = !Item.GetBool(Col.Name),
+        };
+
+        await OnChanged.InvokeAsync(state);
+    }
 }

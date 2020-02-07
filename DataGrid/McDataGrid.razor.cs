@@ -14,7 +14,7 @@ namespace MC.Blazor
         [Parameter] public string Title { get; set; }
         [Parameter] public string CardCssClass { get; set; }
         [Parameter] public string TitleCssClass { get; set; }
-        [Parameter] public List<DataGridColumn> Columns { get; set; }
+        [Parameter] public List<McDataGridColumn> Columns { get; set; }
         [Parameter] public bool HideCreate { get; set; }
 
         [Parameter] public EventCallback<object> OnUpdateClicked { get; set; }

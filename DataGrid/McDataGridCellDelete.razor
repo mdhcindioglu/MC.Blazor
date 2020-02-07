@@ -1,5 +1,4 @@
 ﻿@namespace MC.Blazor
-@typeparam IType
 
 @{
     var cssFormat = Col.CssFormating.ToLower();
@@ -22,11 +21,14 @@
 </button>
 
 @code {
-    [Parameter] public IType Item { get; set; }
-    [Parameter] public DataGridColumn Col { get; set; }
+    [CascadingParameter(Name = "Item")]
+    protected object Item { get; set; }
+    [CascadingParameter(Name = "Col")]
+    protected McDataGridColumn Col { get; set; }
+
     [Parameter] public EventCallback<string> OnDelete { get; set; }
 
-    async Task OnDeleteVoid(IType Item)
+    async Task OnDeleteVoid(object Item)
     {
         await OnDelete.InvokeAsync(Item.GetString("Id"));
     }
