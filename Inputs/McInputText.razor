@@ -1,9 +1,14 @@
 ﻿@namespace MC.Blazor
+@using Microsoft.AspNetCore.Components.Forms
+@inherits McInputTextBase
 
-<input type="text" class="form-control @Class" style="position: relative;@Style" />
-<i class="fas fa-info-circle text-danger" style="" data-toggle="tooltip" data-html="true" title=""></i>
-
-@code {
-    [Parameter] public string Style { get; set; }
-    [Parameter] public string Class { get; set; }
-}
+    <div class="form-control-wrapper">
+        @if (!string.IsNullOrWhiteSpace(Label))
+        {
+            <label class="form-control-label" for="@Id">@Label</label>
+        }
+        <input class="form-control @CssClass" id="@Id" @bind-value="@CurrentValue" @bind-value:event="oninput" />
+        <div class="form-control-validation">
+            <ValidationMessage For="@ValidationFor" />
+        </div>
+    </div>

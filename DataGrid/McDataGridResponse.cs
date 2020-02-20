@@ -6,7 +6,7 @@ namespace MC.Blazor
 {
     public class McDataGridResponse<T>
     {
-        public IEnumerable<T> Items { get; set; }
+        public IEnumerable<T> Items { get; set; } = new List<T>();
         public int Count { get; set; }
         public int CountFilter { get; set; }
         public int RecPerPage { get; set; } = 10;

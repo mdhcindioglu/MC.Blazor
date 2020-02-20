@@ -1,0 +1,16 @@
+﻿@namespace MC.Blazor
+@inherits McInputPhoneBase
+@using Microsoft.AspNetCore.Components.Forms;
+
+<div class="form-control-wrapper">
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label class="form-control-label" for="@Id">@Label</label>
+    }
+    <input class="form-control @CssClass" style="@Style" id="@Id" @bind="@CurrentValue" />
+    <div class="form-control-validation">
+        <ValidationMessage For="@ValidationFor" />
+    </div>
+</div>
+
+@val

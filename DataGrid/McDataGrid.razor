@@ -7,6 +7,7 @@
     //Loading
     <McCard>
         <h3 class="text-info text-center mb-0"><McLoadingIcon /></h3>
+        Osama
     </McCard>
 }
 else
@@ -34,8 +35,9 @@ else
     //If loading records
     @if (Response.Items == null)
     {
-        <McCard CssClass="b-green">
+        <McCard CssClass="@CardCssClass">
             <h3 class="text-info text-center mb-0"><McLoadingIcon /></h3>
+            Hasan
         </McCard>
     }
     //If no records
@@ -44,7 +46,7 @@ else
         if (TableFirstRow == null)
         {
             //If no records and no TableFirstRow
-            <McCard CssClass="b-green">
+            <McCard CssClass="@CardCssClass">
                 <div class="text-info text-center mb-0">
                     @if (string.IsNullOrEmpty(Response.Search.Trim()))
                     {
@@ -69,7 +71,7 @@ else
         else
         {
             //If no records and TableFirstRow has been added
-            <McCard CssClass="b-green">
+            <McCard CssClass="@CardCssClass">
                 <table class="table table-bordered table-sm table-striped bg-white">
                     <thead>
                         <tr>
@@ -95,7 +97,7 @@ else
     //If records loaded
     else
     {
-        <McCard CssClass="b-green">
+        <McCard CssClass="@CardCssClass">
             <table class="table table-bordered table-sm table-striped bg-white mb-3">
                 <thead>
                     <tr>
