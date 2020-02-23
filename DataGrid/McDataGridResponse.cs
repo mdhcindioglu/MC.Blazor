@@ -9,7 +9,7 @@ namespace MC.Blazor
         public IEnumerable<T> Items { get; set; } = new List<T>();
         public int Count { get; set; }
         public int CountFilter { get; set; }
-        public int RecPerPage { get; set; } = 10;
+        public int RecPerPage { get; set; }
         public int TotalPageQuantity { get; set; }
         public int CurrentPage { get; set; } = 1;
 

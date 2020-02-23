@@ -20,13 +20,14 @@ namespace MC.Blazor
         [Parameter] public EventCallback<object> OnUpdateClicked { get; set; }
         [Parameter] public EventCallback<object> OnDeleteClicked { get; set; }
         [Parameter] public EventCallback OnCreateClicked { get; set; }
-        [Parameter] public EventCallback<int> OnRefreshClicked { get; set; }
+        [Parameter] public EventCallback<McDataGridResponse<IType>> OnRefreshClicked { get; set; }
+        [Parameter] public EventCallback<int> OnRecordPerPageChanged { get; set; }
         [Parameter] public EventCallback<string> OnSearchClicked { get; set; }
         [Parameter] public EventCallback OnResetSearchClicked { get; set; }
         [Parameter] public EventCallback<McDataGridCellCheckboxState> OnChangedCheckbox { get; set; }
 
         [Parameter] public RenderFragment Header { get; set; }
-        [Parameter] public RenderFragment TableHeader { get; set; }
+        [Parameter] public RenderFragment TableHeader { get; set; }        
         [Parameter] public RenderFragment TableFirstRow { get; set; }
         [Parameter] public RenderFragment Footer { get; set; }
 
@@ -40,16 +41,11 @@ namespace MC.Blazor
             await OnUpdateClicked.InvokeAsync(id);
         }
 
-        protected async Task SelectedPage(int page)
-        {
-            Response.CurrentPage = page;
-            await OnRefreshClicked.InvokeAsync(page);
-        }
-
         protected async Task OnRefresh()
         {
             Response.IsRefreshing = true;
-            await OnRefreshClicked.InvokeAsync(1);
+            await OnRefreshClicked.InvokeAsync(Response);
+            Response.IsRefreshing = false;
         }
 
         protected async Task OnSearch(string searchText)
@@ -67,6 +63,11 @@ namespace MC.Blazor
         protected async Task OnChangedCheckboxVoid(McDataGridCellCheckboxState state)
         {
             await OnChangedCheckbox.InvokeAsync(state);
+        }
+
+        protected async Task OnRecordPerPageChangedVoid(int RecordPerPage)
+        {
+            await OnRecordPerPageChanged.InvokeAsync(RecordPerPage);
         }
     }
 }

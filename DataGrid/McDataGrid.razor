@@ -7,7 +7,6 @@
     //Loading
     <McCard>
         <h3 class="text-info text-center mb-0"><McLoadingIcon /></h3>
-        Osama
     </McCard>
 }
 else
@@ -16,10 +15,10 @@ else
     <McCard CssClass="@CardCssClass">
         <h3 class="text-info d-inline mb-0 @TitleCssClass">@Title</h3>
         <div class="float-right">
-            <button class="btn btn-info mr-1" disabled="@(Response.IsRefreshing ? "disabled" : null)" title="تحديث" @onclick="OnRefresh"><i class="fas fa-sync-alt"></i></button>
+            <button class="btn btn-info mr-1 btn-sm" disabled="@(Response.IsRefreshing ? "disabled" : null)" title="تحديث" @onclick="OnRefresh"><i class="fas fa-sync-alt"></i></button>
             @if (Response.CanCreate && !HideCreate)
             {
-                <button class="btn btn-info" @onclick="OnCreateClicked"><i class="fas fa-plus"></i> إضافة</button>
+                <button class="btn btn-info btn-sm" @onclick="OnCreateClicked"><i class="fas fa-plus"></i> إضافة</button>
             }
         </div>
     </McCard>
@@ -27,7 +26,12 @@ else
     @if (Response != null && Response.Count > 0)
     {
         //Searchtext
-        <McSearchTextBox CssClass="b-green" PlaceHolder="أدخل نص للبحث عنه" OnResetSearchClicked="OnResetSearch" OnSearchClicked="OnSearch" />
+        <CascadingValue Name="Result" Value="Response">
+            <McSearchTextBox CssClass="b-green" PlaceHolder="أدخل نص للبحث عنه" 
+                             OnResetSearchClicked="OnResetSearch" 
+                             OnSearchClicked="OnSearch" 
+                             OnRecordPerPageChanged="OnRecordPerPageChangedVoid" />
+        </CascadingValue>
     }
 
     @Header
@@ -37,7 +41,6 @@ else
     {
         <McCard CssClass="@CardCssClass">
             <h3 class="text-info text-center mb-0"><McLoadingIcon /></h3>
-            Hasan
         </McCard>
     }
     //If no records
@@ -71,34 +74,8 @@ else
         else
         {
             //If no records and TableFirstRow has been added
-            <McCard CssClass="@CardCssClass">
-                <table class="table table-bordered table-sm table-striped bg-white">
-                    <thead>
-                        <tr>
-                            @TableHeader
-                        </tr>
-                        <tr>
-                            @foreach (var col in Columns)
-                            {
-                                <th class="@col.CssHeaderFormating" style="width: @($"{col.Width}%")">@col.Title</th>
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @TableFirstRow
-                        <tr>
-                            <td colspan="@(Columns.Count)"><h4 class="text-center text-info">لا يوجد قيود</h4></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </McCard>
-        }
-    }
-    //If records loaded
-    else
-    {
-        <McCard CssClass="@CardCssClass">
-            <table class="table table-bordered table-sm table-striped bg-white mb-3">
+            @*<McCard CssClass="@CardCssClass">*@
+            <table class="table table-bordered table-sm table-striped bg-white">
                 <thead>
                     <tr>
                         @TableHeader
@@ -112,8 +89,34 @@ else
                 </thead>
                 <tbody>
                     @TableFirstRow
-                    @foreach (var item in Response.Items)
+                    <tr>
+                        <td colspan="@(Columns.Count)"><h4 class="text-center text-info">لا يوجد قيود</h4></td>
+                    </tr>
+                </tbody>
+            </table>
+            @*</McCard>*@
+        }
+    }
+    //If records loaded
+    else
+    {
+        @*<McCard CssClass="@CardCssClass">*@
+        <table class="table table-bordered table-sm table-striped bg-white mb-3">
+            <thead>
+                <tr>
+                    @TableHeader
+                </tr>
+                <tr>
+                    @foreach (var col in Columns)
                     {
+                        <th class="@col.CssHeaderFormating" style="width: @($"{col.Width}%")">@col.Title</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @TableFirstRow
+                @foreach (var item in Response.Items)
+                {
                     <tr>
                         @foreach (var col in Columns.Where(x => item.GetType().GetProperty(x.Name).Name == x.Name))
                         {
@@ -124,18 +127,18 @@ else
                             </CascadingValue>
                         }
                     </tr>
-                    }
-                </tbody>
-            </table>
+                }
+            </tbody>
+        </table>
 
-            @if (EnablePagination)
-            {
-                <McPagination TotalPageQuantity="Response.TotalPageQuantity" CurrentPage="Response.CurrentPage" Radius="2" SelectedPage="SelectedPage" />
-            }
-            <div class="text-center">
-                <span>@Response.FirstRec - @Response.LastRec / @((Response.CountFilter != Response.Count) ? Response.CountFilter : Response.Count) @(Response.Count != Response.CountFilter ? $"({Response.Count})" : null)</span>
-            </div>
-        </McCard>
+        @if (EnablePagination)
+        {
+            <McPagination IType="IType" TotalPageQuantity="Response.TotalPageQuantity" CurrentPage="Response.CurrentPage" Radius="2" SelectedPage="OnRefresh" />
+        }
+        <div class="text-center">
+            <span>@Response.FirstRec - @Response.LastRec / @((Response.CountFilter != Response.Count) ? Response.CountFilter : Response.Count) @(Response.Count != Response.CountFilter ? $"({Response.Count})" : null)</span>
+        </div>
+        @*</McCard>*@
     }
 
     @Footer

@@ -1,4 +1,5 @@
 ﻿@namespace MC.Blazor
+@typeparam IType
 
 @if (TotalPageQuantity > 1)
 {
@@ -15,10 +16,13 @@
 }
 
 @code {
+    [CascadingParameter(Name = "Result")]
+    protected McDataGridResponse<IType> Response { get; set; }
+
     [Parameter] public int CurrentPage { get; set; } = 1;
     [Parameter] public int TotalPageQuantity { get; set; }
     [Parameter] public int Radius { get; set; } = 3;
-    [Parameter] public EventCallback<int> SelectedPage { get; set; }
+    [Parameter] public EventCallback<McDataGridResponse<IType>> SelectedPage { get; set; }
     List<LinkModel> links;
 
     protected override void OnParametersSet()
@@ -31,7 +35,8 @@
         if (link.Page == CurrentPage || !link.Enabled) return;
 
         CurrentPage = link.Page;
-        await SelectedPage.InvokeAsync(link.Page);
+        Response.CurrentPage = CurrentPage;
+        await SelectedPage.InvokeAsync(Response);
     }
 
     private void LoadPages()

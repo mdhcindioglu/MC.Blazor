@@ -1,19 +1,31 @@
 ﻿@namespace MC.Blazor
 
-<McCard CssClass="@CssClass">
-    <div class="form-inline position-relative">
+<div class="form-inline mb-3">
+    <div class="form-inline position-relative" style="max-width:300px;">
         <input type="text" class="form-control form-control-sm w-100" placeholder="@PlaceHolder" @bind-value="SearchText" @bind-value:event="oninput" @onkeypress="KeyPress" style="padding-left: 27px;" />
         <button type="button" class="btn btn-link text-success btn-sm position-absolute @(string.IsNullOrEmpty(SearchText) ? "d-none" : null)" title="بحث" @onclick="@(() => OnSearchClickedVoid(SearchText))" style="top: 1px;left: 1px;padding: 5px;"><i class="fas fa-search"></i></button>
         <button type="button" class="btn btn-link text-danger btn-sm position-absolute @(string.IsNullOrEmpty(SearchText) ? "d-none" : null)" title="حذف" @onclick="OnResetSearchClickedVoid" style="top: 1px;left: 26px;padding: 5px;"><i class="fas fa-times-circle"></i></button>
     </div>
-</McCard>
+
+    <select class="form-control ml-auto form-control-sm" @bind-value="@RecPerPage" @bind-value:event="oninput" @onchange="@(() => OnRecordPerPage(RecPerPage))">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
+</div>
 
 @code {
+    [CascadingParameter(Name = "Result")] public McDataGridResponse<object> Response { get; set; }
+
     [Parameter] public string CssClass { get; set; }
     [Parameter] public string PlaceHolder { get; set; }
     [Parameter] public EventCallback<string> OnSearchClicked { get; set; }
     [Parameter] public EventCallback OnResetSearchClicked { get; set; }
+    [Parameter] public EventCallback<int> OnRecordPerPageChanged { get; set; }
     string SearchText = string.Empty;
+    int RecPerPage = 10;
 
     async Task OnResetSearchClickedVoid()
     {
@@ -30,5 +42,10 @@
     {
         if (e.Key.ToLower() == "enter")
             await OnSearchClicked.InvokeAsync(SearchText);
+    }
+
+    async Task OnRecordPerPage(int RecordPerPage)
+    {
+        await OnRecordPerPageChanged.InvokeAsync(RecordPerPage);
     }
 }
