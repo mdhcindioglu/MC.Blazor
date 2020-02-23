@@ -16,6 +16,7 @@ namespace MC.Blazor
         [Parameter] public string TitleCssClass { get; set; }
         [Parameter] public List<McDataGridColumn> Columns { get; set; }
         [Parameter] public bool HideCreate { get; set; }
+        [Parameter] public bool IsLoading { get; set; }
 
         [Parameter] public EventCallback<object> OnUpdateClicked { get; set; }
         [Parameter] public EventCallback<object> OnDeleteClicked { get; set; }
@@ -23,7 +24,7 @@ namespace MC.Blazor
         [Parameter] public EventCallback<McDataGridResponse<IType>> OnRefreshClicked { get; set; }
         [Parameter] public EventCallback<int> OnRecordPerPageChanged { get; set; }
         [Parameter] public EventCallback<string> OnSearchClicked { get; set; }
-        [Parameter] public EventCallback OnResetSearchClicked { get; set; }
+        [Parameter] public EventCallback<McDataGridResponse<IType>> OnResetSearchClicked { get; set; }
         [Parameter] public EventCallback<McDataGridCellCheckboxState> OnChangedCheckbox { get; set; }
 
         [Parameter] public RenderFragment Header { get; set; }
@@ -57,7 +58,7 @@ namespace MC.Blazor
         protected async Task OnResetSearch()
         {
             Response.Search = string.Empty;
-            await OnResetSearchClicked.InvokeAsync(null);
+            await OnResetSearchClicked.InvokeAsync(Response);
         }
     
         protected async Task OnChangedCheckboxVoid(McDataGridCellCheckboxState state)

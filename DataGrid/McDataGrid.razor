@@ -2,7 +2,7 @@
 @typeparam IType
 @inherits McDataGridBase<IType>
 
-@if (Response == null)
+@if (Response == null || IsLoading)
 {
     //Loading
     <McCard>
@@ -27,7 +27,7 @@ else
     {
         //Searchtext
         <CascadingValue Name="Result" Value="Response">
-            <McSearchTextBox CssClass="b-green" PlaceHolder="أدخل نص للبحث عنه" 
+            <McSearchTextBox CssClass="b-green" IType="IType" PlaceHolder="أدخل نص للبحث عنه" 
                              OnResetSearchClicked="OnResetSearch" 
                              OnSearchClicked="OnSearch" 
                              OnRecordPerPageChanged="OnRecordPerPageChangedVoid" />
