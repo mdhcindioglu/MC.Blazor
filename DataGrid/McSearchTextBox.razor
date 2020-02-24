@@ -5,16 +5,20 @@
 {
     <div class="form-inline mb-3">
         <div class="col-6 position-relative px-0" style="max-width:300px;">
-            <input type="text" class="form-control form-control-sm w-100" placeholder="@PlaceHolder" @bind-value="Response.Search" @bind-value:event="oninput" @onkeypress="KeyPress" style="padding-left: 27px;" />
-            @if (!string.IsNullOrEmpty(Response.Search))
+            <input type="text" class="form-control form-control-sm w-100" placeholder="@PlaceHolder" @bind-value="search" @bind-value:event="oninput" @onkeypress="KeyPress" style="padding-left: 27px;" />
+            @if (!string.IsNullOrEmpty(search))
             {
                 <button type="button" class="btn btn-link text-success btn-sm position-absolute" title="بحث" @onclick="OnSearchClickedVoid" style="top: 1px;left: 1px;padding: 5px;"><i class="fas fa-search"></i></button>
-                <button type="button" class="btn btn-link text-danger btn-sm position-absolute" title="حذف" @onclick="OnResetSearchClickedVoid" style="top: 1px;left: 26px;padding: 5px;"><i class="fas fa-times-circle"></i></button>
             }
+            @if (!string.IsNullOrEmpty(Response.Search))
+            {
+                <button type="button" class="btn btn-link text-danger btn-sm position-absolute" title="حذف" @onclick="OnResetSearchClickedVoid" style="top: 1px;left: @(!string.IsNullOrEmpty(search) ? "26" : "1")px;padding: 5px;"><i class="fas fa-times-circle"></i></button>
+            }
+
         </div>
 
         <div class="col-6 px-0 ml-auto">
-            <select class="form-control form-control-sm float-right" @bind-value="@RecPerPage" @bind-value:event="oninput" @onchange="@(() => OnRecordPerPage(RecPerPage))">
+            <select class="form-control form-control-sm float-right" @bind-value="@Response.RecPerPage" @bind-value:event="oninput" @onchange="OnRecordPerPage">
                 <option value="5">5</option>
                 <option value="10">10</option>
                 <option value="25">25</option>
@@ -33,27 +37,33 @@
     [Parameter] public EventCallback<string> OnSearchClicked { get; set; }
     [Parameter] public EventCallback OnResetSearchClicked { get; set; }
     [Parameter] public EventCallback<int> OnRecordPerPageChanged { get; set; }
-    int RecPerPage = 10;
+    protected string search = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        if (Response != null)
+            search = Response.Search;
+    }
 
     async Task OnResetSearchClickedVoid()
     {
-        Response.Search = string.Empty;
+        search = string.Empty;
         await OnResetSearchClicked.InvokeAsync(null);
     }
 
     async Task OnSearchClickedVoid()
     {
-        await OnSearchClicked.InvokeAsync(Response.Search);
+        await OnSearchClicked.InvokeAsync(search);
     }
 
     async Task KeyPress(KeyboardEventArgs e)
     {
         if (e.Key.ToLower() == "enter")
-            await OnSearchClicked.InvokeAsync(Response.Search);
+            await OnSearchClicked.InvokeAsync(search);
     }
 
-    async Task OnRecordPerPage(int RecordPerPage)
+    async Task OnRecordPerPage()
     {
-        await OnRecordPerPageChanged.InvokeAsync(RecordPerPage);
+        await OnRecordPerPageChanged.InvokeAsync(Response.RecPerPage);
     }
 }
