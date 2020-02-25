@@ -14,7 +14,7 @@ namespace MC.Blazor
         [Parameter] public string InputCssClass { get; set; }
         [Parameter] public Dictionary<string, string> Items { get; set; }
         [Parameter] public Expression<Func<string>> ValidationFor { get; set; }
-        [Parameter] public EventCallback<object> OnItemSelected { get; set; }
+        [Parameter] public EventCallback<string> OnItemSelected { get; set; }
         [Parameter] public EventCallback<string> OnTextChanged { get; set; }
 
         protected object SelectedId { get; set; }
@@ -29,6 +29,21 @@ namespace MC.Blazor
         protected async Task OnTextChangedVoid(string value)
         {
             await OnTextChanged.InvokeAsync(value);
+        }
+
+        protected async Task OnSelected(string value)
+        {
+            Items = null;
+            CurrentValue = value;
+            await OnItemSelected.InvokeAsync(value);
+
+        }
+
+        protected void OnLostFocus()
+        {
+            Items = null;
+            SelectedId = null;
+            CurrentValue = string.Empty;
         }
     }
 }
