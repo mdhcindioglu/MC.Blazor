@@ -27,10 +27,10 @@ namespace MC.Blazor
         [Parameter] public EventCallback<McDataGridResponse<IType>> OnResetSearchClicked { get; set; }
         [Parameter] public EventCallback<McDataGridCellCheckboxState> OnChangedCheckbox { get; set; }
 
-        [Parameter] public RenderFragment Header { get; set; }
+        [Parameter] public RenderFragment McHeader { get; set; }
         [Parameter] public RenderFragment TableHeader { get; set; }        
         [Parameter] public RenderFragment TableFirstRow { get; set; }
-        [Parameter] public RenderFragment Footer { get; set; }
+        [Parameter] public RenderFragment McFooter { get; set; }
 
         protected async Task OnDelete(object id)
         {

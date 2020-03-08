@@ -2,6 +2,9 @@
 
 @using System.Globalization
 
+
+<McDataPickerStyle />
+
 @*@foreach (var calender in CurCultureInfo.OptionalCalendars)
     {
         @calender.AlgorithmType.ToString();
@@ -12,54 +15,56 @@
         <input @bind="Value" @bind:format="@Format" autocomplete="off" type="text" readonly />
         <button class="btn btn-link text-info" @onclick="@ShowCalender" tabindex="-1"><i class="far fa-calendar fa-sm"></i></button>
     </span>
-    <div onmousewheel="" class="mc-datepicker-calendar @(Show?"":"d-none")">
+    <div onmousewheel="" class="mc-datepicker-calendar @(datePickerObject.Show?"":"d-none")">
         <div class="group">
             <div class="header">
-                @*<button @onclick="DecYear" class="btn btn-link float-right"><i class="fas fa-angle-double-left"></i></button>
-                    <button @onclick="DecMonth" class="btn btn-link float-right"><i class="fas fa-chevron-left"></i></button>
-                    <button @onclick="IncYear" class="btn btn-link float-left"><i class="fas fa-angle-double-right"></i></button>
-                    <button @onclick="IncMonth" class="btn btn-link float-left"><i class="fas fa-chevron-right"></i></button>*@
+                <button @onclick="DecYear" class="btn btn-link float-right"><i class="fas fa-angle-double-left"></i></button>
+                <button @onclick="DecMonth" class="btn btn-link float-right"><i class="fas fa-chevron-left"></i></button>
+                <button @onclick="IncYear" class="btn btn-link float-left"><i class="fas fa-angle-double-right"></i></button>
+                <button @onclick="IncMonth" class="btn btn-link float-left"><i class="fas fa-chevron-right"></i></button>
                 <div class="text-center">
-                    @*<select @bind-value="Month" @bind-value:event="oninput" @onchange="ChangeValue" tabindex="-1" class="mc-select">
-                            @for (int i = 1; i < Months.Count(); i++)
-                            {
-                                <option value="@i">@Months[i - 1]</option>
-                            }
-                        </select>
-                        <select @bind-value="Year" @bind-value:event="oninput" @onchange="ChangeValue" tabindex="-1" class="mc-datepicker-calendar-group-header-year">
-                            @for (int i = Now.Year - 50; i < Now.Year + 50; i++)
-                            {
-                                <option value="@i">@i</option>
-                            }
-                        </select>*@
+                    <select @bind-value="datePickerObject.Month" @bind-value:event="oninput" @onchange="ChangeValue" tabindex="-1" class="mc-select">
+                        @for (int i = 1; i < datePickerObject.Months.Count(); i++)
+                        {
+                            <option value="@i">@datePickerObject.Months[i - 1]</option>
+                        }
+                    </select>
+                    <select @bind-value="datePickerObject.Year" @bind-value:event="oninput" @onchange="ChangeValue" tabindex="-1" class="mc-datepicker-calendar-group-header-year">
+                        @for (int i = Now.Year - 50; i < Now.Year + 50; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
                 </div>
             </div>
             <div>
                 <table class="w-100">
                     <thead>
-                        @*<tr>
-                                @for (int i = 0; i < Days.Count(); i++)
-                                {
-                                    <th scope="col" class=""><span>@Days[i]</span></th>
-                                }
-                            </tr>*@
+                        @*Fill day names*@
+                        <tr>
+                            @for (int i = 0; i < datePickerObject.Days.Count(); i++)
+                            {
+                                <th scope="col" class="">
+                                    <span class="@(datePickerObject.IsHoliday(i) ? "text-danger" : null)">
+                                        @datePickerObject.GetDayOfWeek(Value.Year, Value.Month, Value.Day + i)
+                                    </span>
+                                </th>
+                            }
+                        </tr>
                     </thead>
                     <tbody>
-                        @*@for (int i = (int)FirstDayOfWeek; i < 13; i++)
-                            {
-                                if (i > 6) i = 7 - i;
-                                <tr>
-                                    @i*@
-                        @*@for (int j = 0; j < 7; j++)
-                            {
-                                <td onmouseup="">*@
-                        @*<span class="ui-state-default">
-                                @if(CurCultureInfo.Calendar.GetDayOfWeek(Value) ==  i+j+1 == Day)
-                            </span>*@
-                        @*</td>*@
-                        @*}
-                                </tr>
-                            }*@
+                        @for (int r = 1; r < 6; r++)
+                        {
+                            <tr>
+                                @for (int c = 1; c < 8; c++)
+                                {
+                                    if (c * r <= datePickerObject.DaysInMonth)
+                                    {
+                                        <td class="text-center @(datePickerObject.IsHoliday(c-1) ? "text-danger" : null)">@(c * r)</td>
+                                    }
+                                }
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
@@ -68,33 +73,37 @@
 </div>
 
 @code {
-    bool Show = false;
-    //string[] Months;
-    //string[] Days;
-    int Year = Now.Year;
-    int Month = Now.Month;
-    int Day = Now.Day;
-    //int DaysInMonth;
-    //int DayName;
-    //Dictionary<int, string> MonthDays = new Dictionary<int, string>();
-    static int UtcHours = 3;
     static DateTime Now = DateTime.UtcNow.AddHours(UtcHours);
-    CultureInfo CurCultureInfo { get; set; }
-    [Parameter] public string CultureString { get; set; } = "en-US";
+    McDataPickerObject datePickerObject = new McDataPickerObject();
+    [Parameter] public string CultureString { get; set; } = "ar-SY";
+    [Parameter] public static int UtcHours { get; set; } = 3;
     [Parameter] public DateTime Value { get; set; } = Now;
-    [Parameter] public string Format { get; set; } = "MM/dd/yyyy";
-    ///// <summary>
-    ///// Sunday = 0, Monday = 1, Tuesday = 2, Wednesday = 3, Thursday = 4, Friday = 5, Saturday = 6
-    ///// </summary>
-    //[Parameter] public DayOfWeek FirstDayOfWeek { get; set; } = DayOfWeek.Monday;
-    //[Parameter] public EventCallback<DateTime?> OnChangedEvent { get; set; }
+    [Parameter] public string Format { get; set; } = "yyyy/MM/dd";
+    /// <summary>
+    /// Sunday = 0, Monday = 1, Tuesday = 2, Wednesday = 3, Thursday = 4, Friday = 5, Saturday = 6
+    /// </summary>
+    [Parameter] public DayOfWeek FirstDayOfWeek { get; set; } = DayOfWeek.Monday;
+    [Parameter] public EventCallback<DateTime?> OnChangedEvent { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        datePickerObject.CurCultureInfo = new CultureInfo(CultureString);
+    }
 
     protected override void OnInitialized()
     {
-        CurCultureInfo = new CultureInfo(CultureString);
-        //Months = CurCultureInfo.DateTimeFormat.MonthNames;
-        //Days = CurCultureInfo.DateTimeFormat.AbbreviatedDayNames;
-        //ChangeValue();
+        datePickerObject.CurCultureInfo = new CultureInfo(CultureString);
+        datePickerObject.Months = datePickerObject.CurCultureInfo.DateTimeFormat.MonthNames;
+
+        datePickerObject.Days = datePickerObject.CurCultureInfo.DateTimeFormat.AbbreviatedDayNames;
+        for (int i = 0; i < datePickerObject.CurCultureInfo.DateTimeFormat.AbbreviatedDayNames.Count(); i++)
+        {
+            datePickerObject.Days[i] = datePickerObject.CurCultureInfo.DateTimeFormat.AbbreviatedDayNames[i + (int)FirstDayOfWeek > 6 ? i + (int)FirstDayOfWeek - 7 : i + (int)FirstDayOfWeek];
+        }
+
+        datePickerObject.DaysInMonth = datePickerObject.CurCultureInfo.Calendar.GetDaysInMonth(Value.Year, Value.Month);
+
+        ChangeValue();
     }
 
     void OnChanged(DateTime CurDate)
@@ -104,58 +113,75 @@
 
     void ShowCalender()
     {
-        Show = !Show;
+        datePickerObject.Show = !datePickerObject.Show;
         StateHasChanged();
     }
 
     void ChangeValue()
     {
-        //Year = Year > 0 ? Year : Value.Year;
-        //Month = Month > 0 ? Month : Value.Month;
-        //Day = Day > 0 ? Day : Value.Day;
-        //Value = new DateTime(Year, Month, Day);
-        //CurCultureInfo.DateTimeFormat.FirstDayOfWeek = FirstDayOfWeek;
+        datePickerObject.Year = datePickerObject.Year > 0 ? datePickerObject.Year : Value.Year;
+        datePickerObject.Month = datePickerObject.Month > 0 ? datePickerObject.Month : Value.Month;
+        datePickerObject.Day = datePickerObject.Day > 0 ? datePickerObject.Day : Value.Day;
+        Value = new DateTime(datePickerObject.Year, datePickerObject.Month, datePickerObject.Day);
+        datePickerObject.CurCultureInfo.DateTimeFormat.FirstDayOfWeek = FirstDayOfWeek;
 
-        //var weeks = CurCultureInfo.Calendar.GetDayOfWeek(Value);
+        var weeks = datePickerObject.CurCultureInfo.Calendar.GetDayOfWeek(Value);
 
-        //DaysInMonth = CurCultureInfo.Calendar.GetDaysInMonth(Year, Month);
+        datePickerObject.DaysInMonth = datePickerObject.CurCultureInfo.Calendar.GetDaysInMonth(datePickerObject.Year, datePickerObject.Month);
 
         StateHasChanged();
     }
 
-    //void DecYear()
-    //{
-    //    if (Year > Now.Year - 50) Year--;
-    //    ChangeValue();
-    //}
+    void DecYear()
+    {
+        if (datePickerObject.Year > Now.Year - 50) datePickerObject.Year--;
+        ChangeValue();
+    }
 
-    //void IncYear()
-    //{
-    //    if (Year < Now.Year + 49) Year++;
-    //    ChangeValue();
-    //}
+    void IncYear()
+    {
+        if (datePickerObject.Year < Now.Year + 49) datePickerObject.Year++;
+        ChangeValue();
+    }
 
-    //void DecMonth()
-    //{
-    //    if (Month > 1)
-    //        Month--;
-    //    else if (Year > Now.Year - 50)
-    //    {
-    //        Month = 12;
-    //        Year--;
-    //    }
-    //    ChangeValue();
-    //}
+    void DecMonth()
+    {
+        if (datePickerObject.Month > 1)
+            datePickerObject.Month--;
+        else if (datePickerObject.Year > Now.Year - 50)
+        {
+            datePickerObject.Month = 12;
+            datePickerObject.Year--;
+        }
+        ChangeValue();
+    }
 
-    //void IncMonth()
-    //{
-    //    if (Month < 12)
-    //        Month++;
-    //    else if (Year < Now.Year + 49)
-    //    {
-    //        Month = 1;
-    //        Year++;
-    //    }
-    //    ChangeValue();
-    //}
+    void IncMonth()
+    {
+        if (datePickerObject.Month < 12)
+            datePickerObject.Month++;
+        else if (datePickerObject.Year < Now.Year + 49)
+        {
+            datePickerObject.Month = 1;
+            datePickerObject.Year++;
+        }
+        ChangeValue();
+    }
+
+    public class McDataPickerObject
+    {
+        public bool Show = false;
+        public string[] Months;
+        public string[] Days;
+        public int Year = Now.Year;
+        public int Month = Now.Month;
+        public int Day = Now.Day;
+        public int DaysInMonth;
+        public int DayName;
+        public Dictionary<int, string> MonthDays = new Dictionary<int, string>();
+        public CultureInfo CurCultureInfo { get; set; }
+
+        public DayOfWeek GetDayOfWeek(int year, int month, int day) => new DateTime(year, month, day).DayOfWeek;
+        public bool IsHoliday(int i) => Days[i] == CurCultureInfo.DateTimeFormat.AbbreviatedDayNames[6] || Days[i] == CurCultureInfo.DateTimeFormat.AbbreviatedDayNames[0];
+    }
 }

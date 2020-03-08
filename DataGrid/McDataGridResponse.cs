@@ -17,8 +17,8 @@ namespace MC.Blazor
         public string OrderBy { get; set; } = "Id";
         public McOrderDirect OrderDirect { get; set; } = McOrderDirect.Asc;
 
-        public DateTime? DateFrom { get; set; } 
-        public DateTime? DateTo { get; set; }
+        public string DateFrom { get; set; }
+        public string DateTo { get; set; }
         public decimal Total { get; set; }
 
         public int FirstRec => (int)(CurrentPage - 1) * RecPerPage + 1;
